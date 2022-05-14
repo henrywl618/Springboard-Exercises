@@ -24,3 +24,11 @@ function appendTd(tr, value) {
 
   tr.append(newTd);
 }
+
+// appends a delete button to given tr
+
+function appendDeleteBtn(tr){
+  const newButton = document.createElement('td');
+  newButton.innerText = 'X';
+  tr.append(newButton);
+};

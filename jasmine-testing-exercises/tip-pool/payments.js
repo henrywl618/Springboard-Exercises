@@ -9,6 +9,12 @@ let allPayments = {};
 let paymentId = 0;
 
 paymentForm.addEventListener('submit', submitPaymentInfo);
+paymentTbody.addEventListener('click', function(evt){
+  if (evt) evt.preventDefault();
+  if(evt.target.innerText === 'X'){
+    evt.target.parentElement.remove();
+  }
+});
 
 // Add a curPayment object to allPayments, update html and reset input values
 function submitPaymentInfo(evt) {
@@ -55,6 +61,7 @@ function appendPaymentTable(curPayment) {
   appendTd(newTr, '$' + curPayment.billAmt);
   appendTd(newTr, '$' + curPayment.tipAmt);
   appendTd(newTr, curPayment.tipPercent + '%');
+  appendDeleteBtn(newTr);
 
   paymentTbody.append(newTr);
 }
