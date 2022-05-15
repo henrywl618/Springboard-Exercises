@@ -1,0 +1,21 @@
+const PI = 3.14;
+
+
+What is the difference between var and let?
+
+var variables can be redeclared and are scoped by function
+let variables cannot be redeclared and are scoped by code blocks and function
+
+What is the difference between var and const?
+
+var variables can be redeclared and reassigned and are scoped by function
+const variables cannot be redeclared and reassigned and are scoped by code blocks and function
+
+
+What is the difference between let and const?
+
+const must be assigned a variable when its declared and cannot be reassigned.
+
+What is hoisting?
+
+var variables are declared at the beginning of the code and are unassigned until after its assignment code line.
