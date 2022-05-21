@@ -4,9 +4,14 @@
   <link href="connect4.css" rel="stylesheet">
 </head>
 <body>
-
+<h1>Connect 4</h1>
 <div id="game">
   <table id="board"></table>
+  <form>
+    <label>Player 1 Color<input type="color" id="P1Color" value='#ff0000'></label>
+    <label>Player 2 Color<input type="color" id="P2Color" value='#0000ff'></label>
+    <input type="submit" value = "Start/Restart" id="startBtn">
+  </form>
 </div>
 
 <script src="connect4.js"></script>

@@ -12,8 +12,10 @@ class Game{
   constructor(width,height){
     this.WIDTH = width;
     this.HEIGHT = height;
-    this.currPlayer = 1; // active player: 1 or 2
+    this.players = [];
+    this.currPlayer = this.players[0]; // active player: 1 or 2
     this.board = []; // array of rows, each row is array of cells  (board[y][x])
+    this.gameFinished = false;
   }
 
 // * makeBoard: create in-JS board structure:
@@ -30,16 +32,23 @@ class Game{
 
   makeHtmlBoard() {
     const board = document.getElementById('board');
+    const startBtn = document.querySelector("#startBtn");
   
     // make column tops (clickable area for adding a piece to that column)
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
     top.addEventListener('click', this.handleClick.bind(this));
+    startBtn.addEventListener('click', this.initGame.bind(this));
   
     for (let x = 0; x < this.WIDTH; x++) {
       const headCell = document.createElement('td');
       headCell.setAttribute('id', x);
-      top.append(headCell);
+      //create the pieces that will show in the top row when we hover over it
+      const newPiece = document.createElement('div');
+      newPiece.classList.add(`piece`,'hidden');
+      headCell.append(newPiece);
+      this.addHoverEffect(headCell);
+      top.append(headCell)
     }
   
     board.append(top);
@@ -73,7 +82,7 @@ class Game{
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    piece.style.backgroundColor = `${this.currPlayer.color}`
     piece.style.top = -50 * (y + 2);
 
     const spot = document.getElementById(`${y}-${x}`);
@@ -89,6 +98,14 @@ class Game{
   /** handleClick: handle click of column top to play piece */
 
   handleClick(evt) {
+    //show alert if the game hasnt started
+    if(this.board.length === 0){
+      alert('Please start the game');
+      return;
+    }
+
+    if(this.gameFinished) return; //if the current game is finished do nothing
+
     // get x from ID of clicked cell
     const x = +evt.target.id;
 
@@ -99,21 +116,26 @@ class Game{
     }
 
     // place piece in board and add to HTML table
-    this.board[y][x] = this.currPlayer;
+    this.board[y][x] = this.currPlayer.id;
     this.placeInTable(y, x);
     
     // check for win
     if (this.checkForWin()) {
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      this.gameFinished = true;
+      return this.endGame(`Player ${this.currPlayer.id} won!`);
     }
     
     // check for tie
     if (this.board.every(row => row.every(cell => cell))) {
+      this.gameFinished = true;
       return this.endGame('Tie!');
     }
       
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer = this.currPlayer === this.players[0] ? this.players[1] : this.players[0];
+
+    //change color of the top piece to the current players color
+    evt.target.querySelector('div').style.backgroundColor = this.currPlayer.color;
   }
 
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
@@ -129,7 +151,7 @@ class Game{
           y < this.HEIGHT &&
           x >= 0 &&
           x < this.WIDTH &&
-          this.board[y][x] === this.currPlayer
+          this.board[y][x] === this.currPlayer.id
       );
     }
 
@@ -153,13 +175,49 @@ class Game{
     }
   }
 
+  addHoverEffect(td){
 
+    td.addEventListener("mouseover", (evt) => {
+      console.log(evt.target);
+      evt.target.querySelector('div').style.backgroundColor = this.currPlayer.color;
+      evt.target.querySelector('div').classList.toggle('hidden');
+      console.log(evt.target);
+    })
+    td.addEventListener("mouseout", (evt) => {
+      console.log(evt.target);
+      evt.target.querySelector('div').classList.toggle('hidden');
+  
+    })
 
+  }
+
+  initGame(evt){
+    evt.preventDefault();
+    document.querySelector('#board').innerHTML = '';
+    this.board = [];
+    const Player1 = new Player(1, document.querySelector('#P1Color').value);
+    const Player2 = new Player(2, document.querySelector('#P2Color').value);
+    this.players = [Player1,Player2];
+    this.currPlayer = Player1;
+    this.gameFinished = false;
+    currentGame.makeBoard();
+    currentGame.makeHtmlBoard();
+  };
 
 };
 
 
-const currentGame = new Game(7,6);
+class Player{
+  constructor(id,color){
+    this.id = id;
+    this.color = color;
+  }
+};
 
-currentGame.makeBoard();
+
+
+const currentGame = new Game(7,6);
 currentGame.makeHtmlBoard();
+
+
+
