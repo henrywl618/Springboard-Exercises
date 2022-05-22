@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form>
+        <input type="text" placeholder="Title">
+        <input type="number" placeholder="Rating" min="0" max="10">
+        <input type="submit">
+        <div>
+            <label>
+                Sort
+                <input type="button" id="sortAZBtn" value="A to Z">
+                <input type="button" id="sortRatingBtn" value="Rating">
+            </label>
+
+        </div>
+    </form>
+    <ol>
+    </ol>
+    
+    <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous">
+    </script>
+    <script>
+
+        const entries = [];
+        let ratingSort = 1;
+
+        $('form :submit').on('click', function(evt){
+            evt.preventDefault();
+            if( $(':text').val().length <= 2 || $('input[type=number]').val() > 10 || $('input[type=number]').val() < 0){
+                alert('Please enter a valid movie title (More then 2 characters) or valid rating (Between 0-10)!');
+                return;
+            };
+            //store each entry as an object in an array
+            entries.push(
+                {
+                    title: $(':text').val(),
+                    rating: $('input[type=number]').val(),
+                }
+            )
+
+            //create a new li with a button and text based on values from the form entries and append to the ordered list
+            $('ol')
+            .append($(`<li>${$(':text').val()}   Rating: ${$('input[type=number]').val()}</li>`)
+            .append($('<button>X</button>')));
+            
+        })
+
+        //click handler to the delete button. Removes the entry from the stored array and from the HTML
+
+        $('ol').on('click',':button', function(){
+            console.log($(this).parent().index());
+            entries.splice($(this).parent().index(),1);
+            $(this).parent().remove();
+        });
+        
+        //click handler for the AtoZ sort button
+
+        $('form').on('click', '#sortAZBtn', ()=>{
+            sortAtoZ(entries);
+            reorderHTMLList();
+        })
+
+        //click handler for the Rating sort button. Alternatives between ascending and descending order when clicked.
+        //ratingSort variable alternates bwt 1 and 2 to keep track of which order to sort by
+        $('form').on('click', '#sortRatingBtn', ()=>{
+            if(ratingSort === 1){
+                sortRating(entries,'descend');
+                reorderHTMLList();
+                ratingSort = 2;
+            }else if (ratingSort === 2){
+                sortRating(entries,'ascend');
+                reorderHTMLList();
+                 ratingSort = 1;
+            }
+
+        })
+
+        //uses Array.sort() method to sort entry names
+        function sortAtoZ(arr){
+            return arr.sort((a,b)=> {
+                const titleA = a.title.toLowerCase();
+                const titleB = b.title.toLowerCase();
+                if (titleA < titleB) return -1;
+                if (titleA > titleB) return 1;
+                // names must be equal
+                return 0;
+            });
+        }    
+
+        //uses Array.sort() method to sort entry ratings. Parameters are an array of objects and
+        //either the 'descend' or 'ascend' string
+        function sortRating(arr,order){
+            if(order === 'descend'){
+                arr.sort((a,b) => b.rating-a.rating);
+            }
+            else if(order === 'ascend'){
+                arr.sort((a,b) => a.rating-b.rating);
+            }
+        }
+
+        //updates the HTML ordered list. To be used after the entries array is reordered/sorted
+        function reorderHTMLList(){
+            $('ol').empty();
+
+            for(let entry of entries){
+                $('ol')
+                .append($(`<li>${entry.title}   Rating: ${entry.rating}</li>`)
+                .append($('<button>X</button>')));
+            }
+        }
+        
+    </script>
+
+</body>
+</html>
