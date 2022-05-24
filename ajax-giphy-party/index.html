@@ -11,15 +11,19 @@
   <h1 class="text-center">GIPHY PARTY</h1>
 
   <div class="container">
-    <form class="text-center">
-      <input type="text" name="search" id="searchInput" placeholder="Enter a search term">
-      <input type="button" id="searchBtn" value="Search Giphy!" class="btn btn-success"">
-      <input type="button" id="removeBtn" value="Remove Images" class="btn btn-danger">
+    <form>
+      <div class="row justify-content-center">
+        <input type="text" name="search" id="searchInput" placeholder="Enter a search term" class="col-3 ">
+        <input type="button" id="searchBtn" value="Search Giphy!" class="btn btn-success btn-sm col-1 mx-1">
+        <input type="button" id="removeBtn" value="Delete Images" class="btn btn-danger btn-sm col-1">
+      </div>
+
+    </form>
       <hr>
       <div id="imgContainer" class="container">
 
       </div>
-    </form>
+    
   </div>
 
 
