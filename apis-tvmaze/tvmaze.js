@@ -2,6 +2,7 @@
 
 const $showsList = $("#shows-list");
 const $episodesArea = $("#episodes-area");
+const $episodeList = $('#episodes-list')
 const $searchForm = $("#search-form");
 
 
@@ -47,7 +48,7 @@ function populateShows(shows) {
            <div class="card-body row justify-content-center">
              <h5 class="text-primary text-center">${show.name}</h5>
              <div  class="px-3"><small>${show.summary}</small></div>
-             <button name= "epBtn" class="btn btn-outline-light btn-sm Show-getEpisodes text-center col-6 ">
+             <button name= "epBtn" class="btn btn-outline-light btn-sm Show-getEpisodes text-center col-6" data-toggle="modal" data-target="#exampleModal" >
                Episodes
              </button>
            </div>
@@ -98,17 +99,13 @@ async function getEpisodesOfShow(id) {
 /** Write a clear docstring for this function... */
 
 function populateEpisodes(episodes) {
-  const episodeList = $('#episodes-list')
-  episodeList.empty();
+  $episodeList.empty();
   for(let episode of episodes){
-    episodeList.append($(`<li>${episode.name}  (Season ${episode.season}  Number ${episode.number})</li>`));
+    $episodeList.append($(`<li>${episode.name}  (Season ${episode.season}  Number ${episode.number})</li>`));
   }
-  $("#episodes-area").show();
-    
 }
 
 $('body').on('click','button[name=epBtn]', async function(evt){
-  console.log($(this).parent().parent().parent().data('showId'));
   const showID = $(this).parent().parent().parent().data('showId');
   const episodes = await getEpisodesOfShow(showID);
   populateEpisodes(episodes);
