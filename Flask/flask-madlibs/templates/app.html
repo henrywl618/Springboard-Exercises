@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}MADLIBS{% endblock %}
+
+{% block content %} 
+<form action="/story">
+    {% for prompt in prompts %}
+    <label for={{prompt}}>
+        {{prompt}}
+    </label>
+    <input id={{prompt}} type="text" name={{prompt}}><br>
+    {% endfor %}
+    <input type="submit">
+</form>
+{% endblock %}
