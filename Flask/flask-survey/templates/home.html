@@ -4,9 +4,14 @@
 
 {% block content%} 
 <h1>Survey Homepage</h1>
-<form action="/question/0">
-<h3>{{satisfaction_survey.title}}</h3>
-<p>{{satisfaction_survey.instructions}}</p>
-<input type="submit" value="Start">
-</form>
+<form action="/routesurvey">
+    <label>
+        Select a survey
+    </label>
+    <br>
+    {% for survey in surveys.keys() %}
+        <input type="radio" name="survey" id="{{survey}}" value="{{survey}}">
+        <label for="{{survey}}">{{survey}}</label><br>
+    {% endfor %}
+    <input type="submit" value="Submit Choice">
 {% endblock %}

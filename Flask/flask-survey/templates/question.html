@@ -8,10 +8,10 @@
 <form action="/answer">
 
 <label>
-    {{satisfaction_survey.questions[number].question}}
+    {{survey.questions[number].question}}
 </label>
 <br>
-{% for choice in satisfaction_survey.questions[number].choices%}
+{% for choice in survey.questions[number].choices%}
     <input type="radio" name="choices" id="{{choice}}" value="{{choice}}">
     <label for="{{choice}}">{{choice}}</label><br>
 {% endfor %}
