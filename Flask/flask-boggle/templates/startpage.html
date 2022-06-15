@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <form action="/game">
+        <label for="size">Select Board Size</label>
+        <input type="range" name="size" id="boardsize" min="5" max="10">
+        <input type="submit" value="Submit">
+    </form>
+
+{% endblock %}
+

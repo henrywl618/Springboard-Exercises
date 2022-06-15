@@ -4,18 +4,24 @@ from flask import Flask, render_template, session, request, jsonify
 app = Flask(__name__)
 app.config['SECRET_KEY']='BOGGLE'
 
-boggle_game = Boggle()
-gameboard = boggle_game.make_board()
+boggle_game = Boggle(5)
 
 @app.route('/')
+def startpage():
+    return render_template("startpage.html")
+
+@app.route('/game')
 def display():
     """Initializes a new gameboard,sends it to the client as a cookie and render the html page """
+    global boggle_game
     global gameboard
+    size = request.args.get("size",5)
+    boggle_game.size = int(size)
     gameboard = boggle_game.make_board()
     session['gameboard'] = gameboard
-    return render_template('home.html')
+    return render_template('game.html')
 
-@app.route('/', methods=['POST'])
+@app.route('/game', methods=['POST'])
 def find_word():
     """Takes the guess from the client, checks if its a valid guess and returns the result as JSON"""
     gameboard = session["gameboard"]

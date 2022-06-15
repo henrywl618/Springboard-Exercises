@@ -37,7 +37,7 @@ class BoggleGame {
     }
     
     async getResponse(word){
-        return await axios.post('/',{guess:word});
+        return await axios.post('/game',{guess:word});
     }
     
     

@@ -1,0 +1,39 @@
+{% extends  "base.html" %}
+{% block content %}
+<table>
+    {% for row in session['gameboard'] %}
+    <tr>
+        {% for letter in row %}
+        <td>
+            {{letter}}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<form id="guessForm">
+    <label for="guess">Guess a word</label>
+    <input type="text" name="guess" id="guessInput">
+    <input type="submit" value="Submit" id="submitBtn">
+</form>
+<label for="response">Result: </label><span id="response"></span>
+<div>
+    <span>
+        <h3>Timer</h3>
+        <div id="timer">60</div>
+    </span>
+    <span>
+        <h3>Score</h3>
+        <div><h3 id="score">0</h3></div>
+    </span>
+    <span>
+        <h3>High Score</h3>
+        <div id="hi-score">{{session.get('highscore',0)}}</div>
+    </span>
+    <span>
+        <h3>Games Played</h3>
+        <div id="gamesPlayed">{{session.get('games_played',0)}}</div>
+    </span>
+</div>
+{% endblock %}
+   
