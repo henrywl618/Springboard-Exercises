@@ -9,6 +9,8 @@ gameboard = boggle_game.make_board()
 
 @app.route('/')
 def display():
+    global gameboard
+    gameboard = boggle_game.make_board()
     session['gameboard'] = gameboard
     return render_template('home.html')
 
