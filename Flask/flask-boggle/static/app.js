@@ -7,44 +7,40 @@ const $hiscoreDisplay = $('#hi-score')
 const $gamesPlayedDisplay = $('#gamesPlayed')
 
 class BoggleGame {
-
     constructor(seconds){
         this.score = 0
         this.seconds = seconds
         this.guesses = new Set()
     }
-
+    
     // submits http request to server with the form info
     async submitGuess(event){
         event.preventDefault();
-    
         //stops any furthur guess once the timer reaches 0
         if(this.seconds <= 0){
             return
         }
-    
         const guess = $guessInput.val();
-
         console.log(this)        
         const response = await this.getResponse(guess);
         console.log(response)
         this.updatePage(response);
         this.updateScore(response,guess);
-    
         //empty the input field
         $guessForm.trigger('reset');
-    
     }
-    
+
     async getResponse(word){
-        return await axios.post('/game',{guess:word});
-    }
-    
-    
+        return await axios.post('/game',{
+                                        guess:word,
+                                        'guesses':this.guesses});
+    } 
+
     updatePage(response){
+        this.clearHighlights();
         $responseText.text(response.data.result);
     }
-    
+
     //Update the score if the guess is not already been guessed and it is a word/on the board
     updateScore(response,guess){
         if(response.data.result === 'ok' && !this.guesses.has(guess)){
@@ -55,7 +51,6 @@ class BoggleGame {
     }
     
     startTimer(){
-    
         setInterval(()=>{
             //once timer reaches 0, stop the timer and send the score to the server
             if(this.seconds <= 0) {
@@ -63,10 +58,8 @@ class BoggleGame {
                 this.endGame();
                 return
             }
-    
             this.seconds--;
-            $timerDisplay.text(this.seconds)
-    
+            $timerDisplay.text(this.seconds) 
         },1000);
     }
     
@@ -78,14 +71,28 @@ class BoggleGame {
         $hiscoreDisplay.text(highscore)
         $gamesPlayedDisplay.text(gamesPlayed)
     }
+
+    async getHint(){
+         const response = await axios.get('/hint');
+         const hint_char_list = response.data[0];
+         for (const coordinate of hint_char_list) {
+             $(`#${coordinate}`).toggleClass('highlighted');
+         }
+    }
+
+    clearHighlights(){
+        $('.highlighted').each(function(){
+            $(this).toggleClass('highlighted')
+        })
+    }
     
 }
 
 //initialize a new game
 const newGame = new BoggleGame(60)
-
 //start timer on pageload
 $(newGame.startTimer())
-
 //clickevent handler for the submit button
 $guessForm.on('submit',newGame.submitGuess.bind(newGame));
+//eventhandler for hint button
+$('#hintBtn').on('click', newGame.getHint)
