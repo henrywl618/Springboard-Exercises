@@ -24,7 +24,7 @@ def homepage():
 @app.route('/users')
 def userlist():
     """Renders the userlist page"""
-    users = User.query.all()
+    users = User.query.order_by(User.last_name,User.first_name).all()
     return render_template('userlist.html',users=users)
 
 @app.route('/users/new',methods=['GET'])

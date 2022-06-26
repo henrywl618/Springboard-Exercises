@@ -23,7 +23,9 @@ class User(db.Model):
                            nullable=False)                          
     image_url = db.Column(db.String)
 
-    def get_fullname(self):
+    @property
+    def full_name(self):
         """ Return First Name+Last Name of the user """
 
         return f'{self.first_name} {self.last_name}'
+    
