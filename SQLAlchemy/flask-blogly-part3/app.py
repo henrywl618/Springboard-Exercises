@@ -119,15 +119,41 @@ def view_post(post_id):
 @app.route('/posts/<post_id>/edit',methods=['GET'])
 def view_postedit_form(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('editpost.html',post=post)
+    tags = Tag.query.all()
+
+    # Get a list of post_tag ids for this specific post. This SQLAlchemy query returns a list of single element tuples. Use list comprehension to unpack into a list of integers. This list is passed to the template so we can mark a tag checkbox as checked if it is in post_tags_id list.
+    post_tags_id = [i[0] for i in db.session.query(PostTag.tag_id).filter(PostTag.post_id==post_id).all()]
+    # pdb.set_trace()
+    return render_template('editpost.html',post=post,tags=tags,post_tags_id=post_tags_id)
 
 @app.route('/posts/<post_id>/edit',methods=['POST'])
 def edit_post(post_id):
     post = Post.query.get_or_404(post_id)
     post.title = request.form['title']
     post.content = request.form['content']
-
     db.session.add(post)
+
+    # Get list of tag ids of all checked tags in the form.
+    tags_id=request.form.getlist('tags')
+    tags_id=[int(id) for id in tags_id]
+    # Get a list of post_tag ids for this specific post. This SQLAlchemy query returns a list of single element tuples. Use list comprehension to unpack into a list of integers. This list is passed to the template so we can mark a tag checkbox as checked if it is in post_tags_id list.
+    post_tags_id = [i[0] for i in db.session.query(PostTag.tag_id).filter(PostTag.post_id==post_id).all()]
+    # Remove posttags for this post not in the list of checked tags 
+    ids_to_remove = list(set(post_tags_id)-set(tags_id))
+
+    removed_post_tags = PostTag.query.filter( 
+        (PostTag.tag_id.in_(ids_to_remove)) & (PostTag.post_id==post_id)
+        ).all()
+    for post_tag in removed_post_tags:
+        db.session.delete(post_tag)
+    
+    #Add selected new tags
+    pdb.set_trace()
+    for id in tags_id:
+        if id not in post_tags_id:
+            new_post_tag=PostTag(post_id=post_id,tag_id=id)
+            db.session.add(new_post_tag)
+        
     db.session.commit()
 
     return redirect(f'/posts/{post.id}')
