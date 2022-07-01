@@ -162,3 +162,16 @@ def delete_tag(tag_id):
     db.session.delete(tag)
     db.session.commit()
     return redirect('/tags')
+
+@app.route('/tags/<tag_id>/edit',methods=['GET'])
+def view_edittag(tag_id):
+    tag = Tag.query.get_or_404(tag_id)
+    return render_template('tag_edit.html',tag=tag)
+
+@app.route('/tags/<tag_id>/edit',methods=['POST'])
+def edit_tag(tag_id):
+    tag = Tag.query.get_or_404(tag_id)
+    tag.name = request.form['tagName']
+    db.session.add(tag)
+    db.session.commit()
+    return redirect(f'/tags/{tag_id}')
