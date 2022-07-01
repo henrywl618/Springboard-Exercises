@@ -1,7 +1,7 @@
 """Blogly application."""
 
 from flask import Flask, request, redirect, render_template
-from models import db, connect_db, User, Post
+from models import db, connect_db, User, Post, Tag, PostTag
 from datetime import datetime
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -135,3 +135,30 @@ def page_not_found(e):
     # note that we set the 404 status explicitly
     return render_template('404.html'), 404
 
+@app.route('/tags',methods=['GET'])
+def view_tags():
+    tags = Tag.query.all()
+    return render_template('tags.html',tags=tags)
+
+@app.route('/tags/<tag_id>',methods=['GET'])
+def view_tag_details(tag_id):
+    tag = Tag.query.get_or_404(tag_id)
+    return render_template('tagdetails.html',tag=tag)
+
+@app.route('/tags/new',methods=['GET'])
+def view_addtag_form():
+    return render_template('tag_create.html')
+
+@app.route('/tags/new',methods=['POST'])
+def add_tag():
+    new_tag = Tag(name=request.form['tagName'])
+    db.session.add(new_tag)
+    db.session.commit()
+    return redirect('/tags')
+
+@app.route('/tags/<tag_id>/delete',methods=['POST'])
+def delete_tag(tag_id):
+    tag = Tag.query.get_or_404(tag_id)
+    db.session.delete(tag)
+    db.session.commit()
+    return redirect('/tags')

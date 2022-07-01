@@ -60,7 +60,7 @@ class Post(db.Model):
                             secondary='posts_tags',
                             backref='posts')
 
-class Tag(db.model):
+class Tag(db.Model):
     """ Tag """
 
     __tablename__="tags"
@@ -76,16 +76,16 @@ class Tag(db.model):
                      nullable=False,
                      unique=True)
 
-class PostTag(db.model):
+class PostTag(db.Model):
     """ Post tags """
 
     __tablename__="posts_tags"
 
     post_id = db.Column(db.Integer,
-                        db.ForeignKey(posts.id),
+                        db.ForeignKey('posts.id'),
                         primary_key=True)
-    tags_id = db.Column(db.Integer,
-                        db.ForeignKey(tags.id),
+    tag_id = db.Column(db.Integer,
+                        db.ForeignKey('tags.id'),
                         primary_key=True)
     
     
