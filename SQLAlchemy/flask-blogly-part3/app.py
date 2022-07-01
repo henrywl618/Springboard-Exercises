@@ -4,6 +4,7 @@ from flask import Flask, request, redirect, render_template
 from models import db, connect_db, User, Post, Tag, PostTag
 from datetime import datetime
 from flask_debugtoolbar import DebugToolbarExtension
+import pdb
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -87,7 +88,8 @@ def delete_user(user_id):
 @app.route('/users/<user_id>/posts/new',methods=['GET'])
 def show_postform(user_id):
     user = User.query.get_or_404(user_id)
-    return render_template('postform.html', user=user)
+    tags = Tag.query.all()
+    return render_template('postform.html', user=user, tags=tags)
 
 @app.route('/users/<user_id>/posts/new',methods=['POST'])
 def add_post(user_id):
@@ -98,6 +100,15 @@ def add_post(user_id):
                     user_id=user.id)
     db.session.add(new_post)
     db.session.commit()
+
+    # Get the list of checked tags and add the post/tag relationship to the db. The HTML page sends the value of each checked tag as the tag.id. Post needs to be committed to the DB first to get a post id.
+    tags = request.form.getlist('tags')
+    post_id = new_post.id
+    for tag_id in tags:
+        post_tag = PostTag(post_id=post_id,tag_id=tag_id)
+        db.session.add(post_tag)
+    db.session.commit()
+
     return redirect(f'/users/{user.id}')
 
 @app.route('/posts/<post_id>',methods=['GET'])

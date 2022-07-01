@@ -11,7 +11,12 @@ Add Post
         <label for="title">Title<input type="text" name="title" id="title"></label><br>
         <label for="content">Content<textarea type="text" name="content" id="content"></textarea></label>
         <br>
-        <button formaction="/users/{{user.id}}" formmethod='get' type="submit"> Cancel </button>
+        <div>
+            {% for tag in tags %}
+            <input type="checkbox" name="tags" id="{{tag.name}}" value="{{tag.id}}"><label for="tags">{{tag.name}}</label>
+            {% endfor %}
+        </div>
         <button type="submit">Add</button>
+        <button formaction="/users/{{user.id}}" formmethod='get' type="submit"> Cancel </button>
     </form>
 {% endblock %}
