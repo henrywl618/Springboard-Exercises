@@ -8,10 +8,8 @@
 <h1>{{user.full_name}}</h1>
 <img src={{user.image_url}} alt="profile picture">
 <form action="/users/{{user.id}}/edit" method="get">
-    <button type="submit">Edit</button>
-</form>
-<form action="/users/{{user.id}}/delete">
-    <button type="submit">Delete</button>
+    <button class="btn btn-primary btn-sm" type="submit">Edit</button>
+    <button class="btn btn-danger btn-sm" type="submit" formaction="/users/{{user.id}}/delete" formmethod="post">Delete</button>
 </form>
 <h2>Posts</h2>
 <ul>
@@ -20,6 +18,6 @@
     {% endfor %}
 </ul>
 <form action="/users/{{user.id}}/posts/new" method="get">
-    <button type="submit">Add Post</button>
+    <button class="btn btn-success btn-sm" type="submit">Add Post</button>
 </form>
 {% endblock %}

@@ -1,9 +1,9 @@
 """Blogly application."""
 
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, flash
 from models import db, connect_db, User, Post, Tag, PostTag
 from datetime import datetime
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_debugtoolbar import DebugToolbarExtension
 import pdb
 
 app = Flask(__name__)
@@ -12,8 +12,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = '123456'
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS']=False
-app.debug=True
-toolbar = DebugToolbarExtension(app)
+# app.debug=True
+# toolbar = DebugToolbarExtension(app)
 
 
 connect_db(app)
@@ -123,7 +123,6 @@ def view_postedit_form(post_id):
 
     # Get a list of post_tag ids for this specific post. This SQLAlchemy query returns a list of single element tuples. Use list comprehension to unpack into a list of integers. This list is passed to the template so we can mark a tag checkbox as checked if it is in post_tags_id list.
     post_tags_id = [i[0] for i in db.session.query(PostTag.tag_id).filter(PostTag.post_id==post_id).all()]
-    # pdb.set_trace()
     return render_template('editpost.html',post=post,tags=tags,post_tags_id=post_tags_id)
 
 @app.route('/posts/<post_id>/edit',methods=['POST'])
@@ -148,7 +147,6 @@ def edit_post(post_id):
         db.session.delete(post_tag)
     
     #Add selected new tags
-    pdb.set_trace()
     for id in tags_id:
         if id not in post_tags_id:
             new_post_tag=PostTag(post_id=post_id,tag_id=id)
@@ -189,9 +187,15 @@ def view_addtag_form():
 @app.route('/tags/new',methods=['POST'])
 def add_tag():
     new_tag = Tag(name=request.form['tagName'])
-    db.session.add(new_tag)
-    db.session.commit()
-    return redirect('/tags')
+    try:
+        db.session.add(new_tag)
+        db.session.commit()
+        return redirect('/tags')
+    except Exception as error:
+        db.session.rollback()
+        pdb.set_trace()
+        flash(f'{error.DETAIL}')
+        return redirect('/tags/new')
 
 @app.route('/tags/<tag_id>/delete',methods=['POST'])
 def delete_tag(tag_id):
@@ -212,3 +216,8 @@ def edit_tag(tag_id):
     db.session.add(tag)
     db.session.commit()
     return redirect(f'/tags/{tag_id}')
+
+@app.route('/posts',methods=['GET'])
+def view_all_posts():
+    posts = Post.query.order_by(Post.created_at.desc()).all()
+    return render_template('posts.html',posts=posts)

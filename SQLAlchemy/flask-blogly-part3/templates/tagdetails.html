@@ -11,8 +11,8 @@
     </ul>
     <div>
         <form action="/tags/{{tag.id}}/edit" method="get">
-            <button type="submit">Edit</button>
-            <button type="submit" formaction="/tags/{{tag.id}}/delete" formmethod="post">Delete</button>
+            <button  class="btn btn-sm btn-primary" type="submit">Edit</button>
+            <button  class="btn btn-sm btn-danger" type="submit" formaction="/tags/{{tag.id}}/delete" formmethod="post">Delete</button>
         </form>
     </div>
 {% endblock %}

@@ -5,22 +5,18 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{post.title}}</h1>
-<p>{{post.content}}</p>
-<blockquote>By {{post.user.full_name}}</blockquote>
-<span>Tags:</span>
-    <span>
-        {% for tag in post.tags %}
-        <a href="/tags/{{tag.id}}">{{tag.name}}</a>
-        {% endfor %}
-    </span>
-    <br>
-    <br>
+    <h5 class="fs-3 fw-bold"><a class="text-decoration-none text-dark" href="/posts/{{post.id}}">{{post.title}}</a></h5>
+    <p class="text-body">{{post.content}}</p>
+    <blockquote class="fs-6 fw-lighter">By <a class="text-decoration-none text-primary" href="/users/{{post.user_id}}">{{post.user.full_name}}</a> on {{post.created_at}}</blockquote>
+    <p class="fs-6 fw-bold">
+        Tags: {% for tag in post.tags %} <a class="badge bg-secondary text-decoration-none" href="/tags/{{tag.id}}">{{tag.name}}</a>{% endfor %}
+    </p>
+
 
 <form action="">
-    <input type="submit" formaction="/users/{{post.user.id}}" formmethod="get" value="Cancel">
-    <input type="submit" formaction="/posts/{{post.id}}/edit" formmethod="get" value="Edit">
-    <input type="submit" formaction="/post/{{post.id}}/delete" formmethod="post" value="Delete">
+    <input class="btn btn-sm btn-outline-primary" type="submit" formaction="/users/{{post.user.id}}" formmethod="get" value="Cancel">
+    <input class="btn btn-sm btn-primary" type="submit" formaction="/posts/{{post.id}}/edit" formmethod="get" value="Edit">
+    <input class="btn btn-sm btn-danger" type="submit" formaction="/post/{{post.id}}/delete" formmethod="post" value="Delete">
 </form>
 
 {% endblock %}

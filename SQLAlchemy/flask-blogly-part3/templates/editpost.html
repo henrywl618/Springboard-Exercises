@@ -7,8 +7,11 @@ Edit Post
 {% block content %}
     <h1>Edit Post</h1>
     <form action="/posts/{{post.id}}/edit" method="post">
-        <label for="title">Title<input type="text" name="title" id="title" placeholder={{post.title}}></label>
-        <label for="content">Content<textarea type="text" name="content" id="content">{{post.content}}</textarea></label>
+        <label for="title">Title</label><br>
+        <input type="text" name="title" id="title" value={{post.title}}><br>
+
+        <label for="content">Content</label><br>
+        <textarea type="text" name="content" id="content">{{post.content}}</textarea><br>
 
         <div>
             {% for tag in tags %}
@@ -16,7 +19,7 @@ Edit Post
             {% endfor %}
         </div>
 
-        <button type="submit" formaction="/posts/{{post.id}}" formmethod="get">Cancel</button>
-        <button type="submit">Edit</button>
+        <button class="btn btn-sm btn-outline-primary" type="submit" formaction="/posts/{{post.id}}" formmethod="get">Cancel</button>
+        <button class="btn btn-sm btn-primary" type="submit">Edit</button>
     </form>
 {% endblock %}

@@ -5,12 +5,19 @@ Edit Tag
 {% endblock %}
 
 {% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <h4>{{message}}</h4>
+            {% endfor %}
+        {% endif%}
+    {% endwith %}
     <h1>Edit Tag</h1>
     <form action="/tags/{{tag.id}}/edit" method="post">
-        <label for="tagName">Name<input type="text" name="tagName" id="tagName" placeholder={{tag.name}}></label>
+        <label for="tagName">Name<input type="text" name="tagName" id="tagName" value={{tag.name}}></label>
 
-        <button type="submit">Edit</button>
-        <button type="submit" formaction="/tags/{{tag.id}}" formmethod="get">Cancel</button>
+        <button  class="btn btn-sm btn-success" type="submit">Edit</button>
+        <button  class="btn btn-sm btn-outline-primary"type="submit" formaction="/tags/{{tag.id}}" formmethod="get">Cancel</button>
 
     </form>
 {% endblock %}
