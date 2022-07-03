@@ -1,0 +1,17 @@
+{{ form.hidden_tag() }} <!--add type=hidden form fields (CSRF token) -->
+
+{% for field in form 
+    if field.widget.input_type != 'hidden'%}
+    
+    {% if field == form.available %}
+        {{field.label(class_='form-label')}}
+        {{field(class_='form-check-input')}}
+    {% else %}
+        {{field.label(class_='form-label')}}
+        {{field(class_='form-control')}}
+    {% endif %}
+
+    {% for error in field.errors %}
+        <small class="text-danger">{{error}}</small><br>
+    {% endfor %}
+{% endfor %}

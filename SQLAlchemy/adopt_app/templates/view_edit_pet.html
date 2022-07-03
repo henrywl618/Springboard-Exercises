@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title%}
+View and Edit Pet
+{% endblock %}
+
+{% block content %}
+    <h1>View and Edit Pet</h1>
+    <div>
+        <h3>{{pet.name}}</h3>
+        <h6>Species: {{pet.species}}</h6>
+        {% if pet.photo_url %}
+        <img src="{{pet.photo_url}}" alt="pet photo">
+        {% endif %}
+        {% if pet.age %}
+        <p>Age: {{pet.age}}</p>
+        {% endif %}
+    </div>
+
+    <form method="post">
+        {% include 'form_template.j2' %}
+        <br>
+        <button class="btn btn-sm btn-primary"type="submit">Edit</button>
+    </form>
+{% endblock %}
